@@ -281,6 +281,10 @@ fn ensure_single_instance(replace: bool) -> bool {
                     false,
                 );
                 if let Some(proc) = system.process(sysinfo::Pid::from_u32(pid)) {
+                    if proc.status() == sysinfo::ProcessStatus::Zombie {
+                        return true;
+                    }
+
                     if replace {
                         proc.kill_with(sysinfo::Signal::Term);
                         proc.wait();
